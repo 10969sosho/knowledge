@@ -12,3 +12,4 @@
 - **Seeder/Migration**: Jangan rely pada `php -l`. Runtime verify seeder dengan driver MySQL/MariaDB compatible syntax.
 - **ALURELAB Webhooks**: Xendit callback wajib memakai `XENDIT_WEBHOOK_TOKEN`; Biteship webhook memakai custom header/secret dan harus fail-closed jika belum dikonfigurasi.
 - **ALURELAB Audit Batch**: Fallback transaksi, buyer phone IDOR, tenant header tanpa membership, mock payout/AWB, public settings leak, dan Redis/DB inventory divergence sudah diputus. Durable inventory reservation expiry/release sudah selesai. Voucher atomik dan Xendit disbursement/reconciliation belum selesai.
+- **ALURELAB Hosting**: Production `app.alurelab.com` deployed/current, PM2 `alurelab-frontend` port 3040 online, Laravel scheduler cron aktif setiap menit, migration reservation applied, and runtime backup created at `/home/alurelab/app.alurelab.com.bak_20260916_1122`.
