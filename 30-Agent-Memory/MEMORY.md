@@ -11,4 +11,4 @@
 - **Symlink Rule Next16 cPanel**: Copy `.next/static/.` ke `public/_next/` lalu symlink `ln -s . public/_next/static`.
 - **Seeder/Migration**: Jangan rely pada `php -l`. Runtime verify seeder dengan driver MySQL/MariaDB compatible syntax.
 - **ALURELAB Webhooks**: Xendit callback wajib memakai `XENDIT_WEBHOOK_TOKEN`; Biteship webhook memakai custom header/secret dan harus fail-closed jika belum dikonfigurasi.
-- **ALURELAB Audit Batch**: Fallback transaksi, buyer phone IDOR, tenant header tanpa membership, mock payout/AWB, public settings leak, dan Redis/DB inventory divergence sudah diputus. Reservation expiry, voucher atomik, dan Xendit disbursement belum selesai.
+- **ALURELAB Audit Batch**: Fallback transaksi, buyer phone IDOR, tenant header tanpa membership, mock payout/AWB, public settings leak, dan Redis/DB inventory divergence sudah diputus. Durable inventory reservation expiry/release sudah selesai. Voucher atomik dan Xendit disbursement/reconciliation belum selesai.
