@@ -10,3 +10,4 @@
 - **cPanel Next.js Ports**: Port 3001 (furniture), 3002 (kawasaki). Jangan tabrak port, selalu cek `ps aux | grep next-server`.
 - **Symlink Rule Next16 cPanel**: Copy `.next/static/.` ke `public/_next/` lalu symlink `ln -s . public/_next/static`.
 - **Seeder/Migration**: Jangan rely pada `php -l`. Runtime verify seeder dengan driver MySQL/MariaDB compatible syntax.
+- **ALURELAB Webhooks**: Xendit callback wajib memakai `XENDIT_WEBHOOK_TOKEN`; Biteship webhook memakai custom header/secret dan harus fail-closed jika belum dikonfigurasi.
