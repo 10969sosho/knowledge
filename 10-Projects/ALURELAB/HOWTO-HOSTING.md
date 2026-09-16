@@ -19,7 +19,7 @@ php artisan migrate --force
 ## Provider Setup Required
 
 - Set `BITESHIP_WEBHOOK_SECRET` in the backend environment and use the same value in the Biteship webhook dashboard.
-- Set the Xendit invoice callback token to the backend `XENDIT_WEBHOOK_TOKEN` value.
+- Xendit invoice callback token is configured in production; keep the dashboard token equal to backend `XENDIT_WEBHOOK_TOKEN`.
 - Confirm both callbacks use the deployed HTTPS API URLs.
 
 ## Deployment Status (2026-09-16)
@@ -29,3 +29,4 @@ php artisan migrate --force
 - Storefront, NextAuth session, and API smoke tests returned `200`.
 - Invalid Xendit and Biteship webhook tokens returned `401`.
 - Runtime backup: `/home/alurelab/app.alurelab.com.bak_20260916_1122`.
+- Xendit webhook token backup: `/home/alurelab/app.alurelab.com.bak_20260916_1122/backend.env.before_xendit_token`.
