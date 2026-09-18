@@ -29,10 +29,6 @@ curl -sS https://app.alurelab.com/kalmora
 
 Jika hash berbeda, buat backup runtime sesuai SOP lalu restart PM2 `alurelab-frontend`. Restart production wajib dikonfirmasi sebelum dijalankan karena dapat memutus request singkat.
 
-## E2E Loop Gate
-
-Buyer smoke harus lulus sebelum mutating test. Mutating seller/order/shipping test membutuhkan seller yang sudah email-verified dan store origin Biteship (`address_area_id`) yang valid. Gunakan COD untuk loop pertama agar tidak membuat pembayaran nyata; online payment diuji terpisah dengan sandbox/provider test.
-
 ## Evidence
 
 Playwright menyimpan screenshot, video, trace, console error, failed request, dan response HTTP 4xx/5xx di `frontend/test-results/`; report HTML ada di `frontend/qa-report/`.
