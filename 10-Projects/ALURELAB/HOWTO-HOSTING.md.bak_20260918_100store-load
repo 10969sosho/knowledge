@@ -39,8 +39,6 @@ Sementara Biteship di-skip dengan `QA_SKIP_SHIPPING=1`; loop non-shipping tetap 
 
 Untuk loop penuh tanpa provider eksternal, gunakan `QA_PAYMENT_METHOD=ONLINE` tanpa `QA_SKIP_SHIPPING`. Server QA simulation aktif hanya untuk slug allowlist `qa-loop-20260918`, sehingga payment langsung masuk escrow QA dan shipment menghasilkan AWB QA melalui endpoint normal.
 
-Load test awal 100 store memakai `qa/load/100-store-buyer-smoke.js`; 100 checkout paralel QA menghasilkan 100/100 HTTP 201. Sebelum menaikkan VU, pasang baseline monitoring karena observasi server menunjukkan load average tinggi dan swap hampir penuh.
-
 ## Evidence
 
 Playwright menyimpan screenshot, video, trace, console error, failed request, dan response HTTP 4xx/5xx di `frontend/test-results/`; report HTML ada di `frontend/qa-report/`.

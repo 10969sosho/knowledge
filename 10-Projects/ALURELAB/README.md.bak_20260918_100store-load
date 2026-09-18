@@ -7,5 +7,3 @@ Temuan 2026-09-18: PM2 stale build sudah diperbaiki dengan restart dan asset `/_
 Non-shipping loop sekarang lulus dengan `QA_SKIP_SHIPPING=1`: buyer order history, seller processing, dan finance ikut terverifikasi.
 
 QA simulation loop juga lulus dengan payment ONLINE dan simulated shipment. Gate hanya aktif untuk `qa-loop-20260918`; production tenant lain tetap provider nyata.
-
-Load QA awal 100 store / 100 checkout berhasil 100% pada namespace `qa-load-*`. Hasil ini belum menjadi kapasitas maksimum karena baseline CPU, PostgreSQL, I/O, dan memory belum direkam.
