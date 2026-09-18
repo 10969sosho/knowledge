@@ -44,9 +44,3 @@ Load test awal 100 store memakai `qa/load/100-store-buyer-smoke.js`; 100 checkou
 ## Evidence
 
 Playwright menyimpan screenshot, video, trace, console error, failed request, dan response HTTP 4xx/5xx di `frontend/test-results/`; report HTML ada di `frontend/qa-report/`.
-
-## CMS Templates
-
-Production frontend uses five buyer templates selected in Dashboard > CMS: `editorial`, `modern`, `marketplace`, `split`, and `brutalist`.
-
-Each template consumes the same CMS contract: branding, hero, navigation, sections, highlights, and `buyerCopy`. The buyer copy contract is shared by home, product detail, cart, checkout, and account pages. Deploy requires a full runtime backup, `npm run build`, backend config cache rebuild, and `pm2 restart alurelab-frontend`.
