@@ -1,8 +1,5 @@
-# ALURELAB
+# ALURELAB QA
 
-Production-readiness notes for the Laravel API and Next.js storefront.
+Browser QA untuk production ALURELAB menggunakan Playwright. Sumber test ada di repo aplikasi `frontend/qa/`.
 
-- Backend: `backend/`
-- Frontend: `frontend/`
-- Current focus: real provider integrations and inventory safety
-- Remaining product work: Xendit disbursement/reconciliation and atomic vouchers
+Temuan awal 2026-09-18: proses Next.js production menyajikan HTML dengan hash asset lama, sementara `.next` berisi hash build baru. Akibatnya asset `/_next/static/*` mengembalikan HTTP 400 dan buyer/seller JavaScript tidak aktif.

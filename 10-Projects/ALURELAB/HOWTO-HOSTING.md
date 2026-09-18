@@ -1,32 +1,34 @@
-# ALURELAB Hosting
+# ALURELAB Hosting QA
 
-## Laravel Scheduler
+## Production Browser QA
 
-The backend releases expired inventory reservations every minute. Configure one cPanel cron entry:
-
-Production cPanel server currently uses:
-
-```cron
-* * * * * cd /home/alurelab/app.alurelab.com/backend && php artisan schedule:run >> /dev/null 2>&1
-```
-
-Run the migration before serving checkout:
+Jalankan dari laptop, tanpa menyimpan credential ke repository:
 
 ```bash
-php artisan migrate --force
+cd /Users/10969sosho/PROJECTS/finance/PROJECT/PROJECT\ ANTIGRAVITY/ALURELAB/frontend
+QA_BASE_URL=https://app.alurelab.com \
+QA_STORE_SLUG=kalmora \
+QA_BUYER_PHONE='...' \
+QA_BUYER_NAME='QA Buyer' \
+QA_SELLER_EMAIL='...' \
+QA_SELLER_PASSWORD='...' \
+npm run qa:smoke
 ```
 
-## Provider Setup Required
+`qa:smoke` tidak membuat produk, submit order, mengubah status order, atau melakukan pembayaran. Test login buyer tetap membuat/menyegarkan sesi buyer sebagai efek yang sedang diuji.
 
-- Set `BITESHIP_WEBHOOK_SECRET` in the backend environment and use the same value in the Biteship webhook dashboard.
-- Xendit invoice callback token is configured in production; keep the dashboard token equal to backend `XENDIT_WEBHOOK_TOKEN`.
-- Confirm both callbacks use the deployed HTTPS API URLs.
+## Production Stale Build Check
 
-## Deployment Status (2026-09-16)
+Jika test gagal karena static asset 400, bandingkan hash HTML dengan filesystem build:
 
-- Backend migration and optimized caches completed.
-- Frontend built successfully and PM2 `alurelab-frontend` reloaded on port `3040`.
-- Storefront, NextAuth session, and API smoke tests returned `200`.
-- Invalid Xendit and Biteship webhook tokens returned `401`.
-- Runtime backup: `/home/alurelab/app.alurelab.com.bak_20260916_1122`.
-- Xendit webhook token backup: `/home/alurelab/app.alurelab.com.bak_20260916_1122/backend.env.before_xendit_token`.
+```bash
+ssh -p 31988 alurelab@160.187.143.18 \
+  'cd /home/alurelab/app.alurelab.com/frontend && ls .next/static/css .next/static/chunks/app/\[store_slug\]'
+curl -sS https://app.alurelab.com/kalmora
+```
+
+Jika hash berbeda, buat backup runtime sesuai SOP lalu restart PM2 `alurelab-frontend`. Restart production wajib dikonfirmasi sebelum dijalankan karena dapat memutus request singkat.
+
+## Evidence
+
+Playwright menyimpan screenshot, video, trace, console error, failed request, dan response HTTP 4xx/5xx di `frontend/test-results/`; report HTML ada di `frontend/qa-report/`.
