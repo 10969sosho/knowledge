@@ -54,5 +54,3 @@ Each template consumes the same CMS contract: branding, hero, navigation, sectio
 All buyer routes now use the shared themed navbar and theme frame: product detail, cart, checkout, account, order tracking, and custom CMS pages. The navbar always resolves valid Home, Shop, Cart, Checkout, and Account destinations; CMS edits labels and visibility while destinations stay safe.
 
 Shop is a dedicated route at `/{store_slug}/shop` with product listing, category filters, search, product links, and add-to-cart. Theme settings are injected from the server storefront layout through `BuyerThemeProvider`; do not reintroduce per-page client settings fetches because they cause a visible theme flash.
-
-Kopitiam product seed (2026-09-18): production store `kopitiam` now has 50 active coffee products, 50 standard variants with stock 50, and populated descriptions. Pre-change backup: `/home/alurelab/repositories/kopitiam_products_before_20260918_153314.json`. Overgenerated intermediate backup: `/home/alurelab/repositories/kopitiam_products_overgenerated_20260918_153314.json`.
