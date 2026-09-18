@@ -58,5 +58,3 @@ Shop is a dedicated route at `/{store_slug}/shop` with product listing, category
 Kopitiam product seed (2026-09-18): production store `kopitiam` now has 50 active coffee products, 50 standard variants with stock 50, and populated descriptions. Pre-change backup: `/home/alurelab/repositories/kopitiam_products_before_20260918_153314.json`. Overgenerated intermediate backup: `/home/alurelab/repositories/kopitiam_products_overgenerated_20260918_153314.json`.
 
 Biteship rates (2026-09-18): Kopitiam origin `ID_ID_3505_350509` is configured and production `POST /api/v1/logistics/rates` returned real rates successfully. Checkout rate radio selection uses `courier_code` plus `courier_service_code`; backup: `/home/alurelab/app.alurelab.com.bak_20260918_biteship-rates.tar.gz`.
-
-Checkout now auto-loads Biteship rates when a logged-in buyer's saved address already has an `areaId`; manual region selection continues to trigger the same request. Backup: `/home/alurelab/app.alurelab.com.bak_20260918_biteship-auto-rates.tar.gz`.
