@@ -52,5 +52,3 @@ Production frontend uses five buyer templates selected in Dashboard > CMS: `edit
 Each template consumes the same CMS contract: branding, hero, navigation, sections, highlights, and `buyerCopy`. The buyer copy contract is shared by home, product detail, cart, checkout, and account pages. Deploy requires a full runtime backup, `npm run build`, backend config cache rebuild, and `pm2 restart alurelab-frontend`.
 
 All buyer routes now use the shared themed navbar and theme frame: product detail, cart, checkout, account, order tracking, and custom CMS pages. The navbar always resolves valid Home, Shop, Cart, Checkout, and Account destinations; CMS edits labels and visibility while destinations stay safe.
-
-Shop is a dedicated route at `/{store_slug}/shop` with product listing, category filters, search, product links, and add-to-cart. Theme settings are injected from the server storefront layout through `BuyerThemeProvider`; do not reintroduce per-page client settings fetches because they cause a visible theme flash.
