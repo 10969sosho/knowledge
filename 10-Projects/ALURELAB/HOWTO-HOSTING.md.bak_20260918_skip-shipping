@@ -35,8 +35,6 @@ Buyer smoke harus lulus sebelum mutating test. Mutating seller/order/shipping te
 
 QA store `qa-loop-20260918` berhasil sampai status `processing`. Booking shipment masih membutuhkan aktivasi Biteship API key; error provider `40002002 Key has not been activated` harus selesai sebelum loop dinyatakan full pass.
 
-Sementara Biteship di-skip dengan `QA_SKIP_SHIPPING=1`; loop non-shipping tetap memverifikasi kategori, variant, COD order, buyer history, processing, dan finance.
-
 ## Evidence
 
 Playwright menyimpan screenshot, video, trace, console error, failed request, dan response HTTP 4xx/5xx di `frontend/test-results/`; report HTML ada di `frontend/qa-report/`.
