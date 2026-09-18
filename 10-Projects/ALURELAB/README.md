@@ -2,4 +2,4 @@
 
 Browser QA untuk production ALURELAB menggunakan Playwright. Sumber test ada di repo aplikasi `frontend/qa/`.
 
-Temuan 2026-09-18: PM2 stale build sudah diperbaiki dengan restart dan asset `/_next/static/*` kembali 200. Buyer login/logout dan empty-checkout guard lulus, tetapi add-to-bag tidak menyimpan item ke cart. Seller QA terblokir karena semua akun seller terdokumentasi belum email-verified dan API mengembalikan 422.
+Temuan 2026-09-18: PM2 stale build sudah diperbaiki dengan restart dan asset `/_next/static/*` kembali 200. Buyer smoke 3/3 dan seller/finance smoke 4/4 lulus. Semi-production QA store berhasil membuat kategori, produk variant, COD order, dan memproses order. Shipment booking tertahan provider Biteship `40002002 Key has not been activated`.

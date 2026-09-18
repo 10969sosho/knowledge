@@ -33,8 +33,6 @@ Jika hash berbeda, buat backup runtime sesuai SOP lalu restart PM2 `alurelab-fro
 
 Buyer smoke harus lulus sebelum mutating test. Mutating seller/order/shipping test membutuhkan seller yang sudah email-verified dan store origin Biteship (`address_area_id`) yang valid. Gunakan COD untuk loop pertama agar tidak membuat pembayaran nyata; online payment diuji terpisah dengan sandbox/provider test.
 
-QA store `qa-loop-20260918` berhasil sampai status `processing`. Booking shipment masih membutuhkan aktivasi Biteship API key; error provider `40002002 Key has not been activated` harus selesai sebelum loop dinyatakan full pass.
-
 ## Evidence
 
 Playwright menyimpan screenshot, video, trace, console error, failed request, dan response HTTP 4xx/5xx di `frontend/test-results/`; report HTML ada di `frontend/qa-report/`.
