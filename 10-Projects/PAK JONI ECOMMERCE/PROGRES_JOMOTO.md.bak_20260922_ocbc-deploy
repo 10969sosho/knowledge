@@ -19,7 +19,6 @@ Log perkembangan fitur & status proyek. Update nota ini setelah tugas/proyek sel
 | ... | `5fb578cb` | Fix: tanpa platform.php override, PHP ^8.3 |
 | ... | `e6810d00`/`cf8440b9` | Refactor deploy.sh (git pull + cp, tanpa rsync) |
 | **2026-08-06** | `6cfb2219` | **feat: move stock ke variant level (color variants for motors)** |
-| **2026-09-22** | `6ea589fc` | **fix(ocbc):** gunakan timestamp `Asia/Jakarta` `+07:00` untuk signature token/QR; token UAT berhasil `2007300` setelah deploy. |
 
 ## Daftar Fitur (Feature List)
 ### Storefront
@@ -46,12 +45,10 @@ Log perkembangan fitur & status proyek. Update nota ini setelah tugas/proyek sel
 - [x] File terdeploy (ItemResource, StockService, OrderService, modal) timestamp sesuai commit `6cfb2219`.
 - [x] Prod pages 200, tidak ada error di laravel.log.
 - [x] Sistem stok varian-level aktif di production.
-- [x] OCBC access token production berhasil setelah timestamp disesuaikan ke `+07:00`.
 
 ## TODO / Next
 - [ ] Verifikasi end-to-end testing variant-level stok di admin motor/ATV (index/create/edit, modal stok) di browser.
 - [ ] (opsional) fix tampilan stok di `category-brand.blade.php` (cek penulisan stok varian).
-- [ ] OCBC generate QR/query/callback end-to-end dengan order QA yang aman.
 
 ## Related
 - [[PAK JONI ECOMMERCE]]
