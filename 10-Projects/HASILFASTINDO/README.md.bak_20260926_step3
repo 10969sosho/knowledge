@@ -17,7 +17,7 @@ Transaksi: Stock & StockMovement (kardeks), GoodsReceipt (inbound + barcode), Pu
 ## Progress
 - [x] Langkah 1 — Migration (13 migration, sukses).
 - [x] Langkah 2 — Seluruh Eloquent Model + relasi + helper stok/FIFO + `DatabaseSeeder` komprehensif (`php artisan db:seed` exit 0).
-- [x] Langkah 3 — 16 Controller + middleware `branch` + 112 route + Master Layout (Tailwind CDN, sidebar Slate-900/Indigo-600) + seluruh Blade views tiap modul. Smoke test runtime: 47 GET route 200, loop tulis (GR create→receive→putaway, SO fulfill FIFO, transfer ship, repack, packing, delivery scan out, opname scan→approve) lolos; `php artisan test --compact` 2/2 PASS, pint clean.
+- [ ] Langkah 3 — Controllers / routes / UI.
 
 ## Akun Seeder (password semua: `password`)
 | Email | Role |
