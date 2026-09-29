@@ -15,6 +15,7 @@ Dokumen ini adalah indeks ringkas semua proyek, domain, repository, dan tautan l
 | **Indira KP** | `https://indirakp.com` | Alurelab (Emerald) | Laravel 13 | [cpanel_hosting.json](file:///Users/10969sosho/knowledge/20-Knowledge/hosting/servers.md) |
 | **3 Putra Perkasa** | `https://3putraperkasa.com` | Alurelab (Emerald) | Laravel 12 (absensi, formula) | [cpanel_hosting.json](file:///Users/10969sosho/knowledge/20-Knowledge/hosting/servers.md) |
 | **KabeKabe** | `https://kbkb.id` | KBKB (`157.15.77.18`) | Laravel + Inertia + React | [servers.md](file:///Users/10969sosho/knowledge/20-Knowledge/hosting/servers.md) |
+| **Core SaaS (Marketing Backend)** | - (lokal) | - | Laravel 13 + SQLite + LLM reply | [HOWTO-HOSTING.md](10-Projects/CORE-SAAS/HOWTO-HOSTING.md) |
 | **DEPPA** | Custom Client | - | Web / App | [DEPPA.md](file:///Users/10969sosho/knowledge/10-Projects/DEPPA/DEPPA.md) |
 | **ADMS** | Custom Client | - | Web / App | [ADMS.md](file:///Users/10969sosho/knowledge/10-Projects/ADMS/ADMS.md) |
 | **Voice Type** | Audio App | - | Whisper / Python | [VOICE TYPE.md](file:///Users/10969sosho/knowledge/10-Projects/VOICE%20TYPE/VOICE%20TYPE.md) |
