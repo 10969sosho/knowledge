@@ -9,20 +9,31 @@ Toolkit backtest strategi gold (XAUUSD) + jembatan konfigurasi MetaTrader 5.
 TRADING_GOLD/
 ├── data/                       # CSV OHLCV multi-TF (delimiter ';')
 │   └── XAU_15m_data.csv        # 494k bar, 2004-06-11 → 2026-01-30
-├── engine/backtester.py        # engine: sizing 1% risk, spread, komisi, metrik
+├── engine/backtester.py        # engine: sizing 1% risk, spread, komisi, metrik,
+│                               #   + BEP lock (Signal.bep_at) & trailing ATR (Signal.trail_atr)
 ├── strategies/
 │   ├── asian_range_sweep.py    # sweep Asia 00:00-06:30 UTC, entry London 07:00-11:30
-│   └── trend_pullback.py       # EMA50/200 H1 + RSI pullback, SL 1.5x ATR
-├── mt5_tools/mt5_bridge.py     # deteksi MT5 macOS + template tester.ini
-├── run_backtest.py             # runner → terminal + BACKTEST_RESULTS.md
-└── BACKTEST_RESULTS.md         # laporan komparasi (auto-backup sebelum ditimpa)
+│   ├── trend_pullback.py       # EMA50/200 H1 + RSI pullback, SL 1.5x ATR
+│   ├── session_sweep_v2.py     # sweep Asia + filter Daily/H4 EMA200 + BEP 1R
+│   ├── london_breakout.py      # breakout London/NY searah EMA200 H1 + trailing 2xATR
+│   └── mtf_pullback_v2.py      # EMA50/200 H1 + RSI 40/60 & Stoch cross + BEP 1R
+├── mql5/GoldSniper.mq5         # EA MQL5 (strategi terbaik: London Breakout)
+├── mt5_tools/
+│   ├── mt5_bridge.py           # deteksi MT5 macOS + template tester.ini
+│   └── compile_ea.py           # salin EA + kompilasi via Wine + verifikasi compile.log
+├── run_backtest.py             # runner 2 strategi lama → BACKTEST_RESULTS.md
+├── run_backtest_all.py         # runner komparatif 3 strategi baru → STRATEGY_COMPARISON.md
+├── BACKTEST_RESULTS.md         # laporan 2 strategi lama (auto-backup sebelum ditimpa)
+└── STRATEGY_COMPARISON.md      # laporan komparatif 3 strategi baru (auto-backup)
 ```
 
 ## Menjalankan
 
 ```bash
 ./venv/bin/python3 TRADING_GOLD/run_backtest.py
+./venv/bin/python3 TRADING_GOLD/run_backtest_all.py       # komparatif 3 strategi baru
 ./venv/bin/python3 TRADING_GOLD/mt5_tools/mt5_bridge.py   # deteksi MT5 + tulis template
+./venv/bin/python3 TRADING_GOLD/mt5_tools/compile_ea.py   # compile GoldSniper.mq5 → .ex5
 ```
 
 ## Parameter broker (engine/backtester.py → `BrokerConfig`)
@@ -56,6 +67,31 @@ Sharpe Ratio (return harian equity × √252), Avg Win $, Avg Loss $.
 Keduanya **rugi** pada konfigurasi dasar ini — output jujur, bukan bug.
 Sinyal ≠ trade: sinyal muncul saat posisi masih terbuka di-skip
 (1 posisi kapan saja), rinciannya di `BACKTEST_RESULTS.md`.
+
+## Hasil komparatif 3 strategi baru (periode sama, `STRATEGY_COMPARISON.md`)
+
+| Metric | Session Sweep v2 | London Breakout | MTF Pullback v2 |
+|---|---|---|---|
+| Total Trades | 238 | 757 | 731 |
+| Win Rate % | 23.95% | 31.70% | 24.49% |
+| Profit Factor | 0.71 | **0.99** | 0.87 |
+| Max Drawdown % | 35.65% | **27.26%** | 44.16% |
+| Net Profit $ | $-3.267,90 | **$-417,10** | $-4.013,87 |
+
+**Terbaik: London Breakout** (PF 0.99, DD terkecil) → menjadi basis EA
+`mql5/GoldSniper.mq5`. Ketiganya masih rugi di konfigurasi dasar — output
+jujur, bukan bug; BEP lock terverifikasi aktif (exit di harga entry).
+
+## Compile EA (macOS, via Wine)
+
+```bash
+./venv/bin/python3 TRADING_GOLD/mt5_tools/compile_ea.py   # exit 0 = 0 errors 0 warnings
+```
+
+Gotcha: (1) metaeditor64 tolak path ber-spasi di argv Python → script menulis
+`compile_ea.bat` lalu `wine cmd /c`; (2) exit code metaeditor di Wine tidak
+reliable (sukses bisa 1) → verifikasi hanya dari `compile.log` (UTF-16,
+`Result: N errors, N warnings`); (3) output: `Experts/GoldSniper.ex5`.
 
 ## Catatan
 
