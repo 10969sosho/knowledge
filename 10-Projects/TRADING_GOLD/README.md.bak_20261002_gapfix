@@ -16,19 +16,15 @@ TRADING_GOLD/
 │   ├── trend_pullback.py       # EMA50/200 H1 + RSI pullback, SL 1.5x ATR
 │   ├── session_sweep_v2.py     # sweep Asia + filter Daily/H4 EMA200 + BEP 1R
 │   ├── london_breakout.py      # breakout London/NY searah EMA200 H1 + trailing 2xATR
-│   ├── mtf_pullback_v2.py      # EMA50/200 H1 + RSI 40/60 & Stoch cross + BEP 1R
-│   └── high_wr_scalper.py      # filter ADX/ATR/tren H1+H4 + pullback EMA21 + reset Stoch
-├── optimize_high_wr.py         # grid search 4 tahap (A entry / B exit / C OOS / D stabilitas)
-├── high_wr_best_params.json    # parameter pemenang (dipilih HANYA dari data train)
-├── mql5/GoldSniper.mq5         # EA MQL5 — kini parametrik (inputs = pemenang optimizer)
+│   └── mtf_pullback_v2.py      # EMA50/200 H1 + RSI 40/60 & Stoch cross + BEP 1R
+├── mql5/GoldSniper.mq5         # EA MQL5 (strategi terbaik: London Breakout)
 ├── mt5_tools/
 │   ├── mt5_bridge.py           # deteksi MT5 macOS + template tester.ini
 │   └── compile_ea.py           # salin EA + kompilasi via Wine + verifikasi compile.log
 ├── run_backtest.py             # runner 2 strategi lama → BACKTEST_RESULTS.md
 ├── run_backtest_all.py         # runner komparatif 3 strategi baru → STRATEGY_COMPARISON.md
 ├── BACKTEST_RESULTS.md         # laporan 2 strategi lama (auto-backup sebelum ditimpa)
-├── STRATEGY_COMPARISON.md      # laporan komparatif 3 strategi baru (auto-backup)
-└── AUTONOMOUS_OPTIMIZATION_REPORT.md  # laporan optimasi High-WR Scalper (auto-backup)
+└── STRATEGY_COMPARISON.md      # laporan komparatif 3 strategi baru (auto-backup)
 ```
 
 ## Menjalankan
@@ -36,7 +32,6 @@ TRADING_GOLD/
 ```bash
 ./venv/bin/python3 TRADING_GOLD/run_backtest.py
 ./venv/bin/python3 TRADING_GOLD/run_backtest_all.py       # komparatif 3 strategi baru
-./venv/bin/python3 TRADING_GOLD/optimize_high_wr.py       # grid search → report + params JSON
 ./venv/bin/python3 TRADING_GOLD/mt5_tools/mt5_bridge.py   # deteksi MT5 + tulis template
 ./venv/bin/python3 TRADING_GOLD/mt5_tools/compile_ea.py   # compile GoldSniper.mq5 → .ex5
 ```
@@ -83,32 +78,9 @@ Sinyal ≠ trade: sinyal muncul saat posisi masih terbuka di-skip
 | Max Drawdown % | 35.65% | **27.26%** | 44.16% |
 | Net Profit $ | $-3.267,90 | **$-417,10** | $-4.013,87 |
 
-**Terbaik dari ketiganya: London Breakout** (PF 0.99, DD terkecil). Ketiganya
-masih rugi di konfigurasi dasar — output jujur, bukan bug; BEP lock terverifikasi
-aktif (exit di harga entry).
-
-## High-WR Scalper (`optimize_high_wr.py` → `AUTONOMOUS_OPTIMIZATION_REPORT.md`)
-
-Grid 4 tahap (~120 detik): **A** filter entry (3.456 kombinasi) → **B** exit/BEP/trail
-(108 per kandidat) → **C** uji out-of-sample 2025-01-02 s/d 2026-01-30 (informatif saja)
-→ **D** stabilitas: kandidat harus profit di **2023 DAN 2024** (18/702 lolos).
-**Pemenang dipilih hanya dari data train** — memilih dari skor test = leakage.
-
-Pemenang (`high_wr_best_params.json`, dipasang ke `mql5/GoldSniper.mq5`):
-ADX 14/18, ATR ratio 0.9, EMA 50/200 H1+H4, pullback EMA21, reset Stoch,
-sesi London mati / NY 13:00-17:00 UTC, SL 2.0×ATR, RR 1:1.2, BEP 0.6R,
-trailing 1.0 ATR (setelah BEP), max 1 trade/hari, risk 1%.
-
-| Periode | Net $ | PF | WR ketat | Eff WR | DD | Trades |
-|---|---|---|---|---|---|---|
-| Train 2023-2024 | 1.499 | 1.38 | 53.9% | 62.5% | 6.49% | 104 |
-| **Out-of-sample 2025-2026** | **−463** | **0.80** | 50.0% | 53.7% | 6.53% | 54 |
-| Full 2023-2026 | 955 | 1.14 | 52.5% | 59.5% | 6.78% | 158 |
-
-**Verdict jujur**: target (Net>0, PF≥1.3, WR≥55%, DD<15%) lolos di train,
-**tidak lolos di out-of-sample**; cuma 2/40 kandidat spec profit di OOS.
-Masih jauh lebih baik dari 5 strategi lama (PF 0.71-0.99, DD 27-62%) tapi
-**bukan penghasil konsisten** — pakai dengan ekspektasi moderat.
+**Terbaik: London Breakout** (PF 0.99, DD terkecil) → menjadi basis EA
+`mql5/GoldSniper.mq5`. Ketiganya masih rugi di konfigurasi dasar — output
+jujur, bukan bug; BEP lock terverifikasi aktif (exit di harga entry).
 
 ## Compile EA (macOS, via Wine)
 
@@ -125,11 +97,4 @@ reliable (sukses bisa 1) → verifikasi hanya dari `compile.log` (UTF-16,
 
 - Timestamp CSV dianggap **UTC** (window sesi Asia/London pakai UTC).
 - Exit berjalan: hold sampai SL/TP; posisi terbuka di akhir data → ditutup (`EOD`).
-- **Lubang data**: dataset punya lubang 32 hari (2025-09-12 23:45 → 2025-10-15 07:45).
-  Dulu backtest menutup posisi di harga buka sesudah lubang → 1 trade phantom
-  +$6.352 (89% dari total net). `backtester.py` kini menutup posisi yang menyeberang
-  lubang **>5 hari** pada close terakhir sebelum lubang (exit `GAP`), dan entry yang
-  jatuh tepat di ujung lubang dibatalkan. Libur normal (max ~73 jam) tidak kena.
 - `XAU_1m_data.csv` (6,8 juta bar) tidak dipakai runner — 15m cukup untuk 2 strategi ini.
-- Dua metrik WR: **Win Rate ketat** (`net>0`) vs **Effective WR** (`win+breakeven`).
-  Ranking optimizer memakai yang effective; keduanya selalu ditampilkan berdampingan.
