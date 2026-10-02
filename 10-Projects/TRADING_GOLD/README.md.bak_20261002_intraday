@@ -8,24 +8,19 @@ Toolkit backtest strategi gold (XAUUSD) + jembatan konfigurasi MetaTrader 5.
 ```
 TRADING_GOLD/
 ├── data/                       # CSV OHLCV multi-TF (delimiter ';')
-│   ├── XAU_15m_data.csv        # 494k bar, 2004-06-11 → 2026-01-30
-│   └── XAU_5m_data.csv         # 1,44M bar 5m (2004→2026); utama utk intraday
+│   └── XAU_15m_data.csv        # 494k bar, 2004-06-11 → 2026-01-30
 ├── engine/backtester.py        # engine: sizing 1% risk, spread, komisi, metrik,
-│                               #   + BEP lock (Signal.bep_at), trailing (Signal.trail_atr),
-│                               #   + eod_minutes opsional (tutup posisi di jam X UTC)
+│                               #   + BEP lock (Signal.bep_at) & trailing ATR (Signal.trail_atr)
 ├── strategies/
 │   ├── asian_range_sweep.py    # sweep Asia 00:00-06:30 UTC, entry London 07:00-11:30
 │   ├── trend_pullback.py       # EMA50/200 H1 + RSI pullback, SL 1.5x ATR
 │   ├── session_sweep_v2.py     # sweep Asia + filter Daily/H4 EMA200 + BEP 1R
 │   ├── london_breakout.py      # breakout London/NY searah EMA200 H1 + trailing 2xATR
 │   ├── mtf_pullback_v2.py      # EMA50/200 H1 + RSI 40/60 & Stoch cross + BEP 1R
-│   ├── high_wr_scalper.py      # filter ADX/ATR/tren H1+H4 + pullback EMA21 + reset Stoch
-│   └── gold_intraday_scalper.py # M5/M15: pullback EMA21 + rejection, ADX/ATR, sesi, EOD 21:00
+│   └── high_wr_scalper.py      # filter ADX/ATR/tren H1+H4 + pullback EMA21 + reset Stoch
 ├── optimize_high_wr.py         # grid search 4 tahap (A entry / B exit / C OOS / D stabilitas)
 ├── high_wr_best_params.json    # parameter pemenang (dipilih HANYA dari data train)
-├── run_intraday_backtest.py    # optimasi grid 4 tahap intraday + YoY → laporan
 ├── mql5/GoldSniper.mq5         # EA MQL5 — kini parametrik (inputs = pemenang optimizer)
-├── mql5/GoldIntradayScalper.mq5 # EA intraday (inputs = pemenang run_intraday_backtest)
 ├── mt5_tools/
 │   ├── mt5_bridge.py           # deteksi MT5 macOS + template tester.ini
 │   └── compile_ea.py           # salin EA + kompilasi via Wine + verifikasi compile.log
@@ -42,11 +37,8 @@ TRADING_GOLD/
 ./venv/bin/python3 TRADING_GOLD/run_backtest.py
 ./venv/bin/python3 TRADING_GOLD/run_backtest_all.py       # komparatif 3 strategi baru
 ./venv/bin/python3 TRADING_GOLD/optimize_high_wr.py       # grid search → report + params JSON
-./venv/bin/python3 TRADING_GOLD/run_intraday_backtest.py  # grid intraday M5 + M15 komparasi (~70s)
 ./venv/bin/python3 TRADING_GOLD/mt5_tools/mt5_bridge.py   # deteksi MT5 + tulis template
 ./venv/bin/python3 TRADING_GOLD/mt5_tools/compile_ea.py   # compile GoldSniper.mq5 → .ex5
-./venv/bin/python3 TRADING_GOLD/mt5_tools/compile_ea.py \
-    --src TRADING_GOLD/mql5/GoldIntradayScalper.mq5      # compile EA intraday
 ```
 
 ## Parameter broker (engine/backtester.py → `BrokerConfig`)
@@ -118,48 +110,16 @@ trailing 1.0 ATR (setelah BEP), max 1 trade/hari, risk 1%.
 Masih jauh lebih baik dari 5 strategi lama (PF 0.71-0.99, DD 27-62%) tapi
 **bukan penghasil konsisten** — pakai dengan ekspektasi moderat.
 
-## Intraday Scalper (`run_intraday_backtest.py` → `INTRADAY_SCALPER_REPORT.md`)
-
-Strategi M5 (M15 hanya komparasi): pullback ke EMA21 + candle rejection, tren H1
-EMA20/50 shift(1), filter ADX≥22 + ATR≥0.9×EMA-ATR(100), sesi London 07:00-11:30 UTC,
-SL 2.5×ATR, RR 1:3, **fast BEP 0.6R**, max 3 trade/hari, **EOD close 21:00 UTC**
-(tanpa overnight — engine `eod_minutes`).
-
-Grid 4 tahap (~70 detik): **A** entry (144) → **B** exit/trail per kandidat (81 → 972)
-→ **C** OOS informatif (15/15 kandidat net>0) → **D** stabilitas profit di 2023 DAN 2024
-(3/15 lolos). Pemenang hanya dari train. **Gotcha**: `max_trades_per_day` harus di-cap
-di dalam `evaluate()` (setelah semua filter), BUKAN di pipeline eksternal — pipeline lama
-menghasilkan profit palsu (+699 PF 1.33 vs −1188 untuk config sama).
-
-Pemenang (`intraday_best_params.json` → `mql5/GoldIntradayScalper.mq5`):
-long-only, sesi London, ADX 22, ATR ratio 0.9, Stoch mati, SL 2.5, RR 1:3, BEP 0.6R,
-trail off, EOD 21:00 UTC, risk 1%.
-
-| Periode | Net $ | PF | WR ketat | Eff WR | DD | Trades |
-|---|---|---|---|---|---|---|
-| Train 2023-2024 | 1.541 | 1.15 | 15.5% | 61.7% | 15.79% | 264 |
-| **Out-of-sample 2025-2026** | **+683** | **1.12** | 14.4% | 65.1% | 16.22% | 146 |
-| Full 2023-2026 | 2.310 | 1.14 | 15.1% | 62.9% | 16.14% | 410 |
-
-YoY (full): 2023 $84 / 2024 $1.457 / 2025 $880 / 2026 −$111 (5 trade, Januari saja).
-M15 dengan parameter sama: −$382 (PF 0.94) — tidak transfer ke TF lebih besar.
-
-**Verdict jujur**: strategi PERTAMA di repo ini yang profit di out-of-sample (net positif
-di 2023, 2024, 2025), tapi margin tipis (PF ~1.14), WR ketat rendah ~15% (banyak exit
-BEP/risiko kecil), dan 2026 sample kecil. Expectation: modest, bukan mesin uang.
-
 ## Compile EA (macOS, via Wine)
 
 ```bash
-./venv/bin/python3 TRADING_GOLD/mt5_tools/compile_ea.py                   # GoldSniper
-./venv/bin/python3 TRADING_GOLD/mt5_tools/compile_ea.py \
-    --src TRADING_GOLD/mql5/GoldIntradayScalper.mq5                       # EA intraday
+./venv/bin/python3 TRADING_GOLD/mt5_tools/compile_ea.py   # exit 0 = 0 errors 0 warnings
 ```
 
 Gotcha: (1) metaeditor64 tolak path ber-spasi di argv Python → script menulis
 `compile_ea.bat` lalu `wine cmd /c`; (2) exit code metaeditor di Wine tidak
 reliable (sukses bisa 1) → verifikasi hanya dari `compile.log` (UTF-16,
-`Result: N errors, N warnings`); (3) output: `Experts/<nama>.ex5` dari `--src`.
+`Result: N errors, N warnings`); (3) output: `Experts/GoldSniper.ex5`.
 
 ## Catatan
 
