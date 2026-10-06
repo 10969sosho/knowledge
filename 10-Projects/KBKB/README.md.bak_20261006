@@ -31,14 +31,6 @@
 
 ## Testing
 ```bash
-php artisan test   # 202 tests / 1344 assertions (2026-10-06)
+php artisan test   # 152 tests / 927 assertions (2026-09-23)
 npm run build      # wajib sebelum test render halaman (Vite manifest)
 ```
-
-## Revisi 2026-10-06 (3 poin, lokal selesai, belum deploy)
-1. **Registrasi member** — pertanyaan "Apakah Anda Partner KBKB?" di paling awal; jika Ya, hanya email + OTP partner lalu biodata diambil dari `Master Identity` (`biodataFromPartner()`), form biodata disingkirkan. OTP wajib terverifikasi sebelum submit.
-2. **Registrasi partner (public & admin)** — toggle "Sudah Member?" : Ya → cukup `member_email` (validasi `Rule::exists('users','email')->where('role', member)`, derive `pic_name/pic_email/pic_whatsapp`, `member_user_id`, `member_code`); Tidak → PIC wajib lengkap (`pic_name`, `pic_email`, `pic_whatsapp`, `pic_phone`). Kolom baru `partners.pic_email`, `pic_whatsapp`, `member_email` (migrasi `2026_10_06_000001`/`000002`, sudah jalan).
-3. **Admin Edit Member** — kartu Keanggotaan bisa atur status + `started_at`/`expires_at` (endpoint `admin.members.membership`); pembayaran manual **tanpa dropdown paket** (Tanggal Aktif, Tanggal Berakhir, Nominal, Metode, Catatan) → `PaymentController::storeManual` set `plan_id=null` dan otomatis update `Membership` (cek `expires_at >= started_at`).
-
-QA Playwright 22/22 PASS, 0 console error (`~/.antigravity/tools/ag-browser/qa-kbkb.mjs`).
-**Bug pre-existing (belum diperbaiki, butuh keputusan):** `config/app.php` timezone `Asia/Makassar` (+08) vs user/browser `Asia/Jakarta` (+07) → tanggal tengah malam tampil mundur 1 hari (mis. `2027-04-01` → "31 Mar 2027"). Perbaikan akar = samakan timezone app ke `Asia/Jakarta`, tapi itu memengaruhi seluruh data/jadwal → jangan diubah diam-diam.
